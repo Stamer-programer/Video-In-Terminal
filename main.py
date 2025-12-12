@@ -8,6 +8,10 @@ from pydub import AudioSegment
 from pydub.playback import play
 import threading
 import math
+from pydub.effects import normalize
+
+
+
 
 video = cv2.VideoCapture()
 audio = AudioSegment.silent(duration=0)
@@ -35,13 +39,16 @@ try:
 
         if currentArg in ("-v", "--Volume"):
             try:
+                audio = check_none_audio(audio)
                 auval = float(currentVal)  # percent
                 if auval <= 0:
                     print("Volume must be > 0")
-                else:
-                    db = 20 * math.log10(auval / 100)
-                    audio = audio + db
-                    print(f"Volume set to {auval}% ({db:.2f} dB)")
+                if auval is not None:
+                    # Convert percent to dB change
+                    db_change = 20 * math.log10(max(auval, 1) / 100)
+                    audio = audio + db_change
+                    print(f"Volume set to {auval}% ({db_change:.2f} dB)")
+
             except ValueError:
                 print("Invalid volume value.")
 
@@ -66,13 +73,9 @@ frame_delay = 1 / fps
 os.system("cls" if os.name == "nt" else "clear")
 print("\033[?25l", end="")  # hide cursor
 
-# Start audio (non-blocking)
-
 
 start_time = time.time()
 frame_count = 0
-
-audio = check_none_audio(audio)
 try:
     while True:
         ret, frame = video.read()
