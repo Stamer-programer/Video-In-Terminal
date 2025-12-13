@@ -2,7 +2,7 @@ Small Video player in terminal
 The bad apple video(just download it):
 [![Watch the video](Examples/ThumbNail.png)](Examples/Example.mp4)
 
-# How To install 
+# How To install(Tested on Arch and Fedora) 
 
 ```console
 git clone https://github.com/Stamer-programer/Video-In-Terminal.git
